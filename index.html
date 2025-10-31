@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haunted House Battle</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Nosifer&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a0a2e 50%, #0f0a1e 100%);
+            font-family: 'Creepster', cursive;
+            color: #ff6b00;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 100, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-family: 'Nosifer', cursive;
+            text-align: center;
+            font-size: 4em;
+            color: #ff0000;
+            text-shadow: 
+                0 0 10px #ff0000,
+                0 0 20px #ff0000,
+                0 0 30px #ff0000,
+                0 0 40px #8b0000,
+                2px 2px 0px #000;
+            margin-bottom: 10px;
+            animation: flicker 3s infinite alternate;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.5em;
+            color: #9d00ff;
+            text-shadow: 0 0 10px #9d00ff, 2px 2px 0px #000;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            41.99% { opacity: 1; }
+            42% { opacity: 0.8; }
+            43% { opacity: 1; }
+            45.99% { opacity: 1; }
+            46% { opacity: 0.7; }
+            46.5% { opacity: 1; }
+            50% { opacity: 1; }
+        }
+        
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .group-card {
+            background: linear-gradient(145deg, #1a0a2e 0%, #0f0515 100%);
+            border: 3px solid #ff6b00;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 
+                0 0 20px rgba(255, 107, 0, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .group-card::before {
+            content: '🦇';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2em;
+            opacity: 0.3;
+            animation: bat-fly 3s ease-in-out infinite;
+        }
+        
+        @keyframes bat-fly {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(15deg); }
+        }
+        
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 0 30px rgba(255, 107, 0, 0.6),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+            border-color: #ff0000;
+        }
+        
+        .group-card.defeated {
+            background: linear-gradient(145deg, #2d0a0a 0%, #1a0000 100%);
+            border-color: #8b0000;
+            opacity: 0.7;
+        }
+        
+        .group-card.defeated::after {
+            content: 'DEFEATED';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 3em;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            font-family: 'Nosifer', cursive;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .group-name {
+            font-size: 2em;
+            color: #ffa500;
+            text-shadow: 0 0 10px #ffa500, 2px 2px 0px #000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .skulls-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            min-height: 80px;
+            align-items: center;
+        }
+        
+        .skull {
+            font-size: 4em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 5px #ff0000);
+            animation: skull-spawn 0.5s ease;
+        }
+        
+        @keyframes skull-spawn {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        
+        .skull:hover {
+            transform: scale(1.2) rotate(15deg);
+            filter: drop-shadow(0 0 15px #ff0000);
+        }
+        
+        .empty-skull {
+            font-size: 4em;
+            opacity: 0.2;
+            color: #666;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(145deg, #8b0000, #ff0000);
+            border: 2px solid #ff6b00;
+            color: #fff;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-family: 'Creepster', cursive;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 1px 1px 2px #000;
+        }
+        
+        button:hover {
+            background: linear-gradient(145deg, #ff0000, #ff4500);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(145deg, #4a0080, #9d00ff);
+            border-color: #9d00ff;
+            font-size: 1.3em;
+            padding: 15px 40px;
+        }
+        
+        .reset-btn:hover {
+            background: linear-gradient(145deg, #6a00a0, #bd00ff);
+            box-shadow: 0 0 20px rgba(157, 0, 255, 0.8);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☠️ HAUNTED HOUSE BATTLE ☠️</h1>
+        <p class="subtitle">⚰️ 3 Skulls = Defeated ⚰️</p>
+        
+        <div class="groups-grid" id="groupsGrid"></div>
+        
+        <div class="controls">
+            <button class="reset-btn" onclick="resetGame()">🎃 RESET GAME 🎃</button>
+        </div>
+    </div>
+    
+    <script>
+        const groups = [
+            { name: 'Group 1', skulls: 0 },
+            { name: 'Group 2', skulls: 0 },
+            { name: 'Group 3', skulls: 0 },
+            { name: 'Group 4', skulls: 0 },
+            { name: 'Group 5', skulls: 0 },
+            { name: 'Group 6', skulls: 0 },
+            { name: 'Group 7', skulls: 0 },
+            { name: 'Group 8', skulls: 0 }
+        ];
+        
+        function renderGroups() {
+            const grid = document.getElementById('groupsGrid');
+            grid.innerHTML = '';
+            
+            groups.forEach((group, index) => {
+                const card = document.createElement('div');
+                card.className = `group-card ${group.skulls >= 3 ? 'defeated' : ''}`;
+                
+                const skullsHtml = [];
+                for (let i = 0; i < 3; i++) {
+                    if (i < group.skulls) {
+                        skullsHtml.push(`<span class="skull" onclick="removeSkull(${index})">💀</span>`);
+                    } else {
+                        skullsHtml.push(`<span class="empty-skull">💀</span>`);
+                    }
+                }
+                
+                card.innerHTML = `
+                    <div class="group-name">${group.name}</div>
+                    <div class="skulls-container">
+                        ${skullsHtml.join('')}
+                    </div>
+                    <div class="buttons">
+                        <button onclick="addSkull(${index})" ${group.skulls >= 3 ? 'disabled' : ''}>
+                            ⚔️ Add Skull
+                        </button>
+                        <button onclick="removeSkull(${index})" ${group.skulls <= 0 ? 'disabled' : ''}>
+                            ❌ Remove
+                        </button>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function addSkull(index) {
+            if (groups[index].skulls < 3) {
+                groups[index].skulls++;
+                renderGroups();
+                
+                if (groups[index].skulls === 3) {
+                    playDefeatSound();
+                }
+            }
+        }
+        
+        function removeSkull(index) {
+            if (groups[index].skulls > 0) {
+                groups[index].skulls--;
+                renderGroups();
+            }
+        }
+        
+        function resetGame() {
+            if (confirm('Reset all scores? This will clear all skulls!')) {
+                groups.forEach(group => group.skulls = 0);
+                renderGroups();
+            }
+        }
+        
+        function playDefeatSound() {
+            // Visual feedback when a group is defeated
+            const audio = new Audio();
+            // Browser will play nothing, but this is a placeholder for sound effect
+        }
+        
+        // Initial render
+        renderGroups();
+    </script>
+</body>
+</html>
